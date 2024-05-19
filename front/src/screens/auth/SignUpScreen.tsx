@@ -4,12 +4,14 @@ import InputField from '../../component/InputField';
 import useForm from '../../hooks/useForm';
 import CustomButton from '../../component/CustomButton';
 import {validateSignup} from '../../utils';
+import useAuth from '../../hooks/queries/useAuth';
 
 interface SignUpScreenProps {}
 
-function SignUpScreen({}: SignUpScreenProps) {
+function SignUpScreen() {
   const passwordRef = useRef<TextInput | null>(null);
   const passwordConfirmRef = useRef<TextInput | null>(null);
+  const {signupMutation, loginMutation} = useAuth();
   const signup = useForm({
     initialValue: {
       email: '',
@@ -20,7 +22,13 @@ function SignUpScreen({}: SignUpScreenProps) {
   });
 
   const handleSubmit = () => {
-    console.log(signup.values);
+    const {email, password} = signup.values;
+    signupMutation.mutate(
+      {email, password},
+      {
+        onSuccess: () => loginMutation.mutate({email, password}),
+      },
+    );
   };
 
   return (
@@ -40,7 +48,7 @@ function SignUpScreen({}: SignUpScreenProps) {
           ref={passwordRef}
           placeholder="비밀번호"
           secureTextEntry
-          textContentType='oneTimeCode'//아이폰 Strong password 창 제거
+          textContentType="oneTimeCode" //아이폰 Strong password 창 제거
           error={signup.errors.password}
           touched={signup.touched.password}
           returnKeyType="next"

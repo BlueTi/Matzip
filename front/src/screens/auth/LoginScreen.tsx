@@ -1,20 +1,21 @@
-import React,{useRef} from 'react';
+import React, {useRef} from 'react';
 import {SafeAreaView, StyleSheet, TextInput, View} from 'react-native';
 import InputField from '../../component/InputField';
 import CustomButton from '../../component/CustomButton';
 import useForm from '../../hooks/useForm';
-import { validateLogin } from '../../utils';
-
+import {validateLogin} from '../../utils';
+import useAuth from '../../hooks/queries/useAuth';
 
 function LoginScreen() {
   const passwordRef = useRef<TextInput | null>(null);
+  const {loginMutation} = useAuth();
   const login = useForm({
     initialValue: {email: '', password: ''},
     validate: validateLogin,
   });
 
   const handleSubmit = () => {
-    console.log(login.values);
+    loginMutation.mutate(login.values);
   };
 
   return (
@@ -27,19 +28,21 @@ function LoginScreen() {
           touched={login.touched.email}
           inputMode="email"
           {...login.getTextInputProps('email')}
-          blurOnSubmit = {false}
-          returnKeyType = 'next'
-          onSubmitEditing={()=>{passwordRef.current?.focus()}}
+          blurOnSubmit={false}
+          returnKeyType="next"
+          onSubmitEditing={() => {
+            passwordRef.current?.focus();
+          }}
         />
         <InputField
-        ref={passwordRef}
+          ref={passwordRef}
           placeholder="비밀번호"
-          secureTextEntry          
+          secureTextEntry
           error={login.errors.password}
           touched={login.touched.password}
           {...login.getTextInputProps('password')}
-          blurOnSubmit = {false}
-          returnKeyType='join'
+          blurOnSubmit={false}
+          returnKeyType="join"
           onSubmitEditing={handleSubmit}
         />
       </View>

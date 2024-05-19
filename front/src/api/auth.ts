@@ -1,7 +1,6 @@
-import axios from 'axios';
-import axiosInstance from './axios';
 import {Category, Profile} from '../types/domain';
 import {getEncryptStorage} from '../utils';
+import axiosInstance from './axios';
 
 type RequestUser = {
   email: string;
@@ -13,6 +12,7 @@ const postSignup = async ({email, password}: RequestUser): Promise<void> => {
     email,
     password,
   });
+
   return data;
 };
 
@@ -37,11 +37,13 @@ type ResponseProfile = Profile & Category;
 
 const getProfile = async (): Promise<ResponseProfile> => {
   const {data} = await axiosInstance.get('/auth/me');
+
   return data;
 };
 
 const getAccessToken = async (): Promise<ResponseToken> => {
-  const refreshToken = getEncryptStorage('refreshToken');
+  const refreshToken = await getEncryptStorage('refreshToken');
+
   const {data} = await axiosInstance.get('/auth/refresh', {
     headers: {
       Authorization: `Bearer ${refreshToken}`,
@@ -55,5 +57,5 @@ const logout = async () => {
   await axiosInstance.post('/auth/logout');
 };
 
-export {postSignup, getProfile, postLogin, getAccessToken, logout};
+export {postSignup, postLogin, getProfile, getAccessToken, logout};
 export type {RequestUser, ResponseToken, ResponseProfile};

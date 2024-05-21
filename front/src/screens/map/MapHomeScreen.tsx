@@ -1,7 +1,7 @@
+import useAuth from '@/hooks/queries/useAuth';
 import React from 'react';
-import {Button, StyleSheet, Text, View} from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import useAuth from '../../hooks/queries/useAuth';
+import { Button, StyleSheet, Text } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface MapHomeScreenProps {}
 

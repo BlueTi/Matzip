@@ -6,18 +6,18 @@ import {
   logout,
   postLogin,
   postSignup,
-} from '../../api/auth';
+} from '@/api/auth';
 import {
   UseMutationCustomOptions,
   UseQueryCustomOptions,
-} from '../../types/common';
+} from '@/types/common';
 import {
   removeEncryptStorage,
   setEncryptStorage,
   removeHeader,
   setHeader,
-} from '../../utils';
-import queryClient from '../../api/queryClient';
+} from '@/utils';
+import queryClient from '@/api/queryClient';
 import {numbers, queryKeys, storageKeys} from '../../constants';
 
 function useSignup(mutaionOptions?: UseMutationCustomOptions) {

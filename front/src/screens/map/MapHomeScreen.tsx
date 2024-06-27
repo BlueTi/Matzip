@@ -1,5 +1,6 @@
 import {colors} from '@/constants';
 import useAuth from '@/hooks/queries/useAuth';
+import usePermission from '@/hooks/usePermission';
 import useUserLocation from '@/hooks/useUserLocation';
 import {MainDrawerParamList} from '@/navigations/drawer/MainDrawerNavigator';
 import {MapStackParamList} from '@/navigations/stack/MapStackNavigator';
@@ -22,6 +23,8 @@ function MapHomeScreen() {
   const navigation = useNavigation<Navigation>();
   const mapRef = useRef<MapView | null>(null);
   const {userLocation, isUserLocationError} = useUserLocation();
+
+  usePermission('LOCATION');
 
   const handleLogout = () => {
     logoutMutation.mutate(null);

@@ -4,6 +4,7 @@ import usePermission from '@/hooks/usePermission';
 import useUserLocation from '@/hooks/useUserLocation';
 import {MainDrawerParamList} from '@/navigations/drawer/MainDrawerNavigator';
 import {MapStackParamList} from '@/navigations/stack/MapStackNavigator';
+import mapStyle from '@/style/mapStyle';
 import {DrawerNavigationProp} from '@react-navigation/drawer';
 import {CompositeNavigationProp, useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
@@ -55,15 +56,16 @@ function MapHomeScreen() {
         showsUserLocation
         followsUserLocation
         showsMyLocationButton={false}
+        customMapStyle={mapStyle}
       />
       <Pressable
         style={[styles.drawerButton, {top: inset.top || 20}]}
         onPress={() => navigation.openDrawer()}>
-        <Ionicons name='menu' color={colors.WHITE} size={25}/>
+        <Ionicons name="menu" color={colors.WHITE} size={25} />
       </Pressable>
       <View style={styles.buttonList}>
         <Pressable style={styles.mapButton} onPress={handlePressUserLocation}>
-        <MaterialIcons name='my-location' color={colors.WHITE} size={25}/>
+          <MaterialIcons name="my-location" color={colors.WHITE} size={25} />
         </Pressable>
       </View>
     </>

@@ -1,5 +1,5 @@
 import CustomMarker from '@/component/CustomMarker';
-import {colors} from '@/constants';
+import {alerts, colors, mapNavigations} from '@/constants';
 import useAuth from '@/hooks/queries/useAuth';
 import usePermission from '@/hooks/usePermission';
 import useUserLocation from '@/hooks/useUserLocation';
@@ -10,7 +10,7 @@ import {DrawerNavigationProp} from '@react-navigation/drawer';
 import {CompositeNavigationProp, useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import React, {useRef, useState} from 'react';
-import {Pressable, StyleSheet, Text, View} from 'react-native';
+import {Alert, Pressable, StyleSheet, Text, View} from 'react-native';
 import MapView, {
   Callout,
   LatLng,
@@ -29,20 +29,29 @@ type Navigation = CompositeNavigationProp<
 
 function MapHomeScreen() {
   const inset = useSafeAreaInsets();
-  const {logoutMutation} = useAuth();
   const navigation = useNavigation<Navigation>();
   const mapRef = useRef<MapView | null>(null);
   const {userLocation, isUserLocationError} = useUserLocation();
-  const [selectLocation,setSelectLocation] = useState<LatLng>();
+  const [selectLocation, setSelectLocation] = useState<LatLng | null>();
 
   usePermission('LOCATION');
 
-  const handleLogout = () => {
-    logoutMutation.mutate(null);
-  };
-
   const handleLongPressMapView = ({nativeEvent}: LongPressEvent) => {
     setSelectLocation(nativeEvent.coordinate);
+  };
+
+  const handlePressAddPost = () => {
+    if (!selectLocation) {
+      return Alert.alert(
+        alerts.NOT_SELECTED_LOCATION.TITLE,
+        alerts.NOT_SELECTED_LOCATION.DESCRIPTION,
+      );
+    }
+    navigation.navigate(mapNavigations.ADD_POST, {
+      location: selectLocation,
+    });
+
+    setSelectLocation(null);
   };
 
   const handlePressUserLocation = () => {
@@ -74,10 +83,14 @@ function MapHomeScreen() {
           coordinate={{
             latitude: 37.5516032365118,
             longitude: 126.98989626020192,
-          }} color='RED'       />
-        {selectLocation && (<Callout>
-          <Marker coordinate={selectLocation}/>
-        </Callout>)}
+          }}
+          color="RED"
+        />
+        {selectLocation && (
+          <Callout>
+            <Marker coordinate={selectLocation} />
+          </Callout>
+        )}
       </MapView>
       <Pressable
         style={[styles.drawerButton, {top: inset.top || 20}]}
@@ -85,6 +98,9 @@ function MapHomeScreen() {
         <Ionicons name="menu" color={colors.WHITE} size={25} />
       </Pressable>
       <View style={styles.buttonList}>
+        <Pressable style={styles.mapButton} onPress={handlePressAddPost}>
+          <MaterialIcons name="add" color={colors.WHITE} size={25} />
+        </Pressable>
         <Pressable style={styles.mapButton} onPress={handlePressUserLocation}>
           <MaterialIcons name="my-location" color={colors.WHITE} size={25} />
         </Pressable>
